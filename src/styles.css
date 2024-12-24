@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+td {
+  height: 3rem;
+  width: 3rem;
+  border: 1px solid rgb(0, 132, 255);
+  border-collapse: collapse;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+table,
+td,
+tr,
+th {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+div.ship {
+  z-index: 2;
+  border: 2px solid blue;
+  position: absolute;
+  background-color: rgb(198, 198, 255);
+  top: 0px;
+  left: 0px;
+  opacity: 0.8;
+}
+
+div.ship.selected{
+    border: 2px solid green;
+    background-color: rgb(149, 189, 149);
+}
+
+line{
+  stroke: rgb(59, 59, 59);
+  stroke-width: 1;
+}
+
+.miss{
+  background-color: rgb(1, 7, 92);
+}
