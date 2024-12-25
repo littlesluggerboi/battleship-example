@@ -1,12 +1,30 @@
 * {
   box-sizing: border-box;
 }
+body, html, p, h1{
+  padding: 0;
+  margin: 0;
+}
 
-body {
+html{
   display: flex;
-  justify-content: center;
+}
+body{
+  margin: auto;
+  display: grid;
+  gap: 1rem;
+}
+
+header{
+  display: flex;
   align-items: center;
 }
+
+header img{
+  height: 3rem;
+  width: 3rem;
+}
+
 td {
   height: 3rem;
   width: 3rem;
@@ -15,6 +33,12 @@ td {
   position: relative;
   padding: 0;
   margin: 0;
+}
+
+table{
+  min-width: 30rem;
+  min-height: 30rem;
+  background-color: aliceblue;
 }
 
 table,
@@ -26,7 +50,7 @@ th {
 }
 
 div.ship {
-  z-index: 2;
+  z-index: 1;
   border: 2px solid blue;
   position: absolute;
   background-color: rgb(198, 198, 255);
@@ -47,4 +71,67 @@ line{
 
 .miss{
   background-color: rgb(1, 7, 92);
+}
+
+div.tables{
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+}
+
+div.cover{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: gainsboro;
+  opacity: 0.9;
+  visibility: hidden;
+}
+
+div > h1{
+  font-size: 7rem;
+}
+
+button.restart{
+  background-color: red;
+  padding: 1rem;
+  border-radius: 4rem;
+}
+
+div.table{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+div.buttons{
+  display: flex;
+  justify-content: space-around;
+}
+button{
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  text-transform: capitalize;
+  color: white;
+  font-size: 1rem;
+}
+
+button.edit{
+  background-color:blue;
+}
+button.hide{
+  background-color: gray;
+}
+button.start{
+  background-color: red;
+  
 }

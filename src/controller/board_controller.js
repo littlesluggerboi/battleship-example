@@ -1,7 +1,8 @@
-export default function BoardController(board) {
+export default function BoardController(board, tableId) {
   this.gameboard = board;
+  this.tableId = tableId;
   this.selected = null;
-  this.turnComplete = false;
+  this.emptyShells = [];
   const crossSVG = () => {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", "2.7rem");
@@ -46,11 +47,24 @@ export default function BoardController(board) {
     }
     return shipElement;
   };
-  this.showEditMode = () => {
-    const boardDisyplay = document.querySelector("table");
+  this.edit = () => {
+    const boardDisyplay = document.getElementById(tableId);
     const table = document.createElement("table");
+    table.id = this.tableId;
+    const theads = document.createElement("tr");
+    theads.append(document.createElement("th"));
+    for(let i = 0; i < 10; i++){
+        const th = document.createElement("th");
+        th.innerHTML = String.fromCharCode(65+i);
+        theads.append(th);
+    }
+    table.append(theads);
     for (let row = 0; row < this.gameboard.board.length; row++) {
       const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.innerHTML = row;
+      th.style.padding = "1rem"
+      tr.append(th);
       for (let col = 0; col < this.gameboard.board[0].length; col++) {
         const td = document.createElement("td");
         td.dataset.row = row;
@@ -87,7 +101,7 @@ export default function BoardController(board) {
               const boatId = parseInt(e.target.id);
               if (this.gameboard.canFlip(boatId)) {
                 this.gameboard.flip(boatId);
-                this.showEditMode();
+                this.edit();
               }
             });
 
@@ -98,7 +112,7 @@ export default function BoardController(board) {
             shipElement.addEventListener("dragend", (e) => {
               const shipUI = document.getElementById(this.selected);
               shipUI.classList.remove("selected");
-              this.showEditMode();
+              this.edit();
             });
             td.append(shipElement);
           }
@@ -110,11 +124,25 @@ export default function BoardController(board) {
     boardDisyplay.replaceWith(table);
   };
 
-  this.showPlayingMode = () => {
-    const boardDisyplay = document.querySelector("table");
+  this.play = () => {
+    this.emptyShells = [];
+    const boardDisyplay = document.getElementById(tableId);
     const table = document.createElement("table");
+    table.id = this.tableId;
+    const theads = document.createElement("tr");
+    theads.append(document.createElement("th"));
+    for(let i = 0; i < 10; i++){
+        const th = document.createElement("th");
+        th.innerHTML = String.fromCharCode(65+i);
+        theads.append(th);
+    }
+    table.append(theads);
     for (let row = 0; row < this.gameboard.board.length; row++) {
       const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.innerHTML = row;
+      th.style.padding = "1rem"
+      tr.append(th);
       for (let col = 0; col < this.gameboard.board[0].length; col++) {
         const td = document.createElement("td");
         td.dataset.row = row;
@@ -125,15 +153,9 @@ export default function BoardController(board) {
         } else if (this.gameboard.board[row][col] == -2) {
           // hit with a ship underneath
           td.append(crossSVG());
+        } else{
+          this.emptyShells.push(td);
         }
-
-        td.addEventListener("click", () => {
-          // receive attack
-          const coordinate = { row: row, col: col };
-          const bool = this.gameboard.receiveAttack(coordinate);
-          this.turnComplete = bool;
-          this.showPlayingMode();
-        });
 
         tr.append(td);
       }
@@ -149,8 +171,53 @@ export default function BoardController(board) {
         cell.append(shipElement);
       }
     }
-    console.log(this.gameboard.isFinish());
-
     boardDisyplay.replaceWith(table);
   };
+
+  this.disable = () =>{
+    const boardDisyplay = document.getElementById(tableId);
+    const table = document.createElement("table");
+    table.id = this.tableId;
+    const theads = document.createElement("tr");
+    theads.append(document.createElement("th"));
+    for(let i = 0; i < 10; i++){
+        const th = document.createElement("th");
+        th.innerHTML = String.fromCharCode(65+i);
+        theads.append(th);
+    }
+    table.append(theads);
+    for (let row = 0; row < this.gameboard.board.length; row++) {
+      const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.innerHTML = row;
+      th.style.padding = "1rem"
+      tr.append(th);
+      for (let col = 0; col < this.gameboard.board[0].length; col++) {
+        const td = document.createElement("td");
+        td.dataset.row = row;
+        td.dataset.col = col;
+        if (this.gameboard.board[row][col] == -1) {
+          // hit with no ship
+          td.classList.add("miss");
+        } else if (this.gameboard.board[row][col] == -2) {
+          // hit with a ship underneath
+          td.append(crossSVG());
+        }
+        tr.append(td);
+      }
+      table.append(tr);
+    }
+    for (let shipPosition of this.gameboard.boats.values()) {
+      const ship = shipPosition.ship;
+      const position = shipPosition.position;
+      if (ship.isSunk()) {
+        const shipElement = createShipElement(ship);
+        const cell = table.querySelector(`td[data-row='${position.row}'][data-col='${position.col}']`);
+        cell.append(shipElement);
+      }
+    }
+    table.style.backgroundColor = "white";
+    boardDisyplay.replaceWith(table);
+  }
+
 }
